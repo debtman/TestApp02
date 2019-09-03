@@ -1,0 +1,84 @@
+﻿@{
+    ViewData["Title"] = "Список задач";
+    Layout = null;
+}
+@model TestApp.Models.ClassTask
+<script src="~/lib/jquery/dist/jquery.js"></script>
+
+
+<div class="text-center">
+    <h1 class="display-4">Список задач</h1>
+</div>
+
+
+@using (Html.BeginForm("CreateNewTask", "Home", FormMethod.Post))
+{
+
+    <p>Новая задача: </p>
+    @Html.TextBox("tName")
+    <p><input type="submit" value="Отправить" /></p>
+}
+
+
+<div>
+    <table>
+        <tr>
+            <td>Все</td>
+            <td>
+                <input name="radio" type="radio" value="ALL"
+                       @(ViewBag.ViewMode == "ALL" ? "checked" : "")
+                       onclick="location.href='@Url.Action("ShowTaskList", "Home",  new { viewMode = "ALL"}, null )'" />
+            </td>
+        </tr>
+
+        <tr>
+            <td>Выполненные</td>
+            <td>
+                <input name="radio" type="radio" value="EXE"
+                       @(ViewBag.ViewMode == "EXE" ? "checked" : "")
+                       onclick="location.href='@Url.Action("ShowTaskList", "Home",  new { viewMode = "EXE"}, null )'" />
+            </td>
+        </tr>
+
+        <tr>
+            <td>Невыполненные</td>
+            <td>
+                <input name="radio" type="radio" value="PLAN"
+                       @(ViewBag.ViewMode == "PLAN" ? "checked" : "")
+                       onclick="location.href='@Url.Action("ShowTaskList", "Home",  new { viewMode = "PLAN"}, null )'" />
+            </td>
+        </tr>
+    </table>
+
+
+
+</div>
+
+
+<table>
+    <tr>
+        <td>№ п/п</td>
+        <td>Название задачи</td>
+        <td>Дата начала</td>        
+        <td>Выполнено</td>
+        <td>Удаление</td>
+
+    </tr>
+    @if (ViewBag.Tasks != null)
+    {
+        @foreach (var xTask in ViewBag.Tasks)
+        {
+            <tr>
+                <td>&nbsp</td>
+                <td>@xTask.TaskName</td>
+                <td>@xTask.StartDate</td>                
+                <td>
+                    <input name="Completed" type="checkbox" checked=@xTask.Completed onclick="location.href='@Url.Action("CheckAsExecute", "Home", new { taskName = @xTask.TaskName}, null )'" />
+                </td>
+                <td>
+                    <input type="submit" value="Удалить" onclick="location.href='@Url.Action("DeleteTask", "Home", new { tName = @xTask.TaskName}, null )'" />
+                </td>
+            </tr>
+        }
+    }
+</table>
